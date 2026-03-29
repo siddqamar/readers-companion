@@ -1,0 +1,37 @@
+# Technical Requirements & Prerequisites
+
+To run, build, or contribute to **Reader's Companion**, ensure your environment meets the following specifications.
+
+## 1. Environment & Runtimes
+- **Node.js:** v18.x or higher (LTS recommended)
+- **npm:** v9.x or higher
+- **Browser:** Google Chrome (or any Chromium-based browser like Brave or Edge)
+
+## 2. Core Tech Stack
+- **Frontend Framework:** React 19
+- **Build Tool:** Vite 6
+- **Language:** TypeScript 5.8
+- **Styling:** Tailwind CSS 4.0
+- **Animations:** Motion (Framer Motion)
+- **Icons:** Lucide React
+
+## 3. External Integrations
+- **Notion API:** 
+  - An active Notion account.
+  - A [Notion Internal Integration Token](https://www.notion.so/my-integrations).
+  - A Notion Database shared with your integration.
+- **Google Gemini API (Optional/Development):**
+  - API Key from [Google AI Studio](https://aistudio.google.com/) if extending AI features.
+
+## 4. Manifest Specifications
+- **Manifest Version:** 3
+- **Permissions Required:** 
+  - `activeTab`: For capturing screenshots and content.
+  - `storage`: For persisting reading sessions and settings.
+  - `contextMenus`: For "Right-click to Save" functionality.
+  - `scripting`: For content interaction.
+
+## 5. Development Dependencies
+- `@types/chrome`: Type definitions for Chrome Extension APIs.
+- `typescript`: For static type checking.
+- `vite`: For lightning-fast builds and HMR.

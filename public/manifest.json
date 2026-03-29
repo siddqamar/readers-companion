@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Reader's Companion",
+  "version": "1.0.0",
+  "description": "Track reading time and save highlights/screenshots directly to Notion.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "contextMenus",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://api.notion.com/*"
+  ],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}
