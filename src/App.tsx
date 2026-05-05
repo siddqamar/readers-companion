@@ -18,6 +18,44 @@ import { AppState, Project, NotionSettings } from './types';
 import { cn } from './lib/utils';
 
 export default function App() {
+  const normalizeAppState = (value: unknown): AppState | null => {
+    if (!value || typeof value !== 'object') return null;
+
+    const maybe = value as Partial<AppState> & {
+      projects?: unknown;
+      settings?: unknown;
+      activeProjectId?: unknown;
+    };
+
+    let settings: NotionSettings | null = null;
+    if (maybe.settings && typeof maybe.settings === 'object') {
+      const s = maybe.settings as Partial<NotionSettings>;
+      if (typeof s.token === 'string' && typeof s.databaseId === 'string') {
+        settings = { token: s.token, databaseId: s.databaseId };
+      }
+    }
+
+    const projects: Project[] = Array.isArray(maybe.projects)
+      ? maybe.projects
+          .map((p): Project | null => {
+            if (!p || typeof p !== 'object') return null;
+            const proj = p as Partial<Project>;
+            if (typeof proj.id !== 'string') return null;
+            if (typeof proj.title !== 'string') return null;
+            if (typeof proj.totalTime !== 'number') return null;
+            const status = proj.status === 'active' || proj.status === 'paused' ? proj.status : 'paused';
+            const lastStarted = typeof proj.lastStarted === 'number' ? proj.lastStarted : undefined;
+            return { id: proj.id, title: proj.title, totalTime: proj.totalTime, status, lastStarted };
+          })
+          .filter((p): p is Project => p !== null)
+      : [];
+
+    const activeProjectId =
+      typeof maybe.activeProjectId === 'string' ? maybe.activeProjectId : maybe.activeProjectId === null ? null : null;
+
+    return { settings, projects, activeProjectId };
+  };
+
   const [state, setState] = useState<AppState>({
     settings: null,
     projects: [],
@@ -32,8 +70,9 @@ export default function App() {
   useEffect(() => {
     chrome.storage.local.get('appState', (data) => {
       if (data.appState) {
-        setState(data.appState);
-        if (!data.appState.settings) {
+        const normalized = normalizeAppState(data.appState);
+        if (normalized) setState(normalized);
+        if (!normalized?.settings) {
           setActiveTab('settings');
         }
       } else {
@@ -44,7 +83,8 @@ export default function App() {
     // Listen for storage changes (timer updates from background)
     const listener = (changes: { [key: string]: chrome.storage.StorageChange }) => {
       if (changes.appState) {
-        setState(changes.appState.newValue);
+        const normalized = normalizeAppState(changes.appState.newValue);
+        if (normalized) setState(normalized);
       }
     };
     chrome.storage.onChanged.addListener(listener);
@@ -73,7 +113,7 @@ export default function App() {
     setError(null);
     try {
       const newProject = await notionService.createProject(newProjectTitle, state.settings);
-      const newState = {
+      const newState: AppState = {
         ...state,
         projects: [...state.projects, newProject],
         activeProjectId: newProject.id
@@ -90,7 +130,7 @@ export default function App() {
 
   const toggleTimer = () => {
     if (!state.activeProjectId) return;
-    const newState = {
+    const newState: AppState = {
       ...state,
       projects: state.projects.map(p => 
         p.id === state.activeProjectId 
