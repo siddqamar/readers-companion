@@ -172,7 +172,7 @@ export default function App() {
           <div className="bg-zinc-900 p-1.5 rounded-lg">
             <BookOpen className="w-4 h-4 text-white" />
           </div>
-          <h1 className="font-semibold text-sm tracking-tight">Reader's Companion</h1>
+          <h1 className="font-semibold text-sm tracking-tight">Reading Logs</h1>
         </div>
         <div className="flex space-x-1">
           <TabButton 
