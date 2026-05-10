@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Chrome Web Store / MV3: avoid remote CSS/font imports in extension UI. */
 @plugin "@tailwindcss/typography";
 
 @theme {
