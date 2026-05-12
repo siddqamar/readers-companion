@@ -6,5 +6,7 @@ coverage/
 .DS_Store
 *.log
 .env*
+AGENTS.md
+notion.md
 !.env.example
 
